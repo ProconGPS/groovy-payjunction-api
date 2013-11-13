@@ -15,17 +15,17 @@ PayJunction.testInstance()
 A simple charge to a credit card, using the TEST card:
 
 ```
-def session = PayJunction.testInstance()
-session.newTransaction {
+session = com.bertramlabs.payjunction.PayJunction.testInstance()
+session.transactions.create {
 	creditCard TEST_CARD
-	charge amount: 110.0
+	charge amount: 110.00
 }
 ```
 
 Break out some of the charges (optional) and add some billing info (address and zip are the expected test values):
 
 ```
-session.newTransaction {
+session.transaction.create {
 	creditCard TEST_CARD
 	charge amount:110.00, tax: 9.72, shipping: 5.00
 	billingInfo {
@@ -38,7 +38,7 @@ session.newTransaction {
 Turn on AVS:
 
 ```
-session.newTransaction {
+session.transactions.create {
 	creditCard TEST_CARD
 	charge amount:110.00, tax: 9.72, shipping: 5.00
 	billingInfo {
@@ -54,19 +54,19 @@ session.newTransaction {
 Get a list of your transactions:
 
 ```
-session.transactions
+session.transactions.all()
 ```
 
 ...or one in particular:
 
 ```
-session.transaction(1111)
+session.transactions.get(1111)
 ```
 
 You can update a transaction, for example changing an amount:
 
 ```
-session.updateTransaction(1111) {
+session.transaction(1111).update {
 	capture 100.0
 }
 ```
@@ -74,11 +74,10 @@ session.updateTransaction(1111) {
 Or simply void an unsettled transaction:
 
 ```
-session.updateTransaction(1111) {
+session.transaction(1111).update {
 	doVoid()
 }
 ```
 
 ## TODOS
-1. Add first-class vault support
 1. Add some configurability for defaults, e.g. turn AVS or CVV on by default.

@@ -2,105 +2,63 @@ package com.bertramlabs.payjunction
 
 import groovy.json.JsonSlurper
 
-import static java.net.HttpURLConnection.*
-
 class PayJunctionRequest {
-	def server
-	def userName
-	def password
+	def httpRequest
+	def url = ''
+	def context
+	boolean idAllowed = true
+	def _offset = 0
 
-	def get(urlString) {
-		def conn = setupConnection("${server}${urlString}")
-		conn.requestMethod = 'GET'
-		checkResponseCode(conn)
-		readResponse(conn)
+	def get(id=null) {
+		def urlAppend = id ? "/${id}" : ''
+		new JsonSlurper().parseText(httpRequest.get("${url}/${urlAppend}"))
 	}
 
-	def post(urlString, formData) {
-		def conn = setupConnection("${server}${urlString}")
-		conn.requestMethod = 'POST'
-
-		conn.setDoOutput(true)
-		conn.setDoInput(true)
-		
-		conn.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
-		def os = new BufferedWriter(new OutputStreamWriter(conn.outputStream))
-		def urlEncoded = buildUrlEncodedFormData(formData)
-		os.write(urlEncoded)
-		os.close()
-
-		// request has been opened so check the response code
-		checkResponseCode(conn)
-		readResponse(conn)
-	}
-
-	def put(urlString, formData) {
-		def conn = setupConnection("${server}${urlString}")
-		conn.requestMethod = 'PUT'
-
-		conn.setDoOutput(true)
-		conn.setDoInput(true)
-		
-		conn.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
-		def os = new BufferedWriter(new OutputStreamWriter(conn.outputStream))
-		def urlEncoded = buildUrlEncodedFormData(formData)
-		os.write(urlEncoded)
-		os.close()
-
-		checkResponseCode(conn)
-		readResponse(conn)
-	}
-
-	private buildUrlEncodedFormData(formData) {
-		formData.collect {k,v ->
-			v = "${v}"
-			"${k}=${URLEncoder.encode(v, 'UTF-8')}"
-		}.join('&')
-	}
-
-	private setupConnection(urlString) {
-		def url = new URL(urlString)
-		def conn = url.openConnection()
-
-		String creds = "${userName}:${password}".bytes.encodeBase64().toString()
-		conn.setRequestProperty("Authorization", "Basic ${creds}")
-		conn.setRequestProperty("Accept", "application/json")
-
-		conn
-	}
-
-	private readResponse(conn) {
-		readStream(conn, 'inputStream')
-	}
-
-	private readError(conn) {
-		readStream(conn, 'errorStream')
-	}
-
-	private readStream(conn, stream) {
-		def br = new BufferedReader(new InputStreamReader(conn."$stream"))
-		def textBuf = new StringBuilder()
-		def text
-		while((text = br.readLine()) != null) {
-			textBuf.append(text)
+	def getAt(int id) {
+		if(!idAllowed) {
+			throw new IllegalStateException("ID cannot be set for URL ${url}")
 		}
-		new JsonSlurper().parseText(textBuf.toString())
+		def c = this.clone()
+		c.idAllowed = false
+		c.url = "${url}/${id}"
+		c
 	}
 
-	private checkResponseCode(conn) {
-		switch(conn.responseCode) {
-		case HTTP_OK:
-		return
-		case HTTP_BAD_REQUEST:
-		throw new BadRequestException(errors: readError(conn).errors)
-		case HTTP_BAD_METHOD:
-		throw new MethodNotAllowedException()
-		case HTTP_UNAUTHORIZED:
-		throw new UnauthorizedException()
-		default:
-		println "Response code: ${conn.responseCode}"
-		println readError(conn).errors
-		throw new PayJunctionException()
+	def offset(int off) {
+		def c = this.clone()
+		c._offset = off
+		c
+	}
+
+	def first() {
+		def json = all()
+		if(json instanceof List) {
+			return json[0]
+		} else {
+			return json
 		}
+	}
+
+	def all() {
+		new JsonSlurper().parseText(httpRequest.get(url)).results
+	}
+
+	def create(Closure c) {
+		bindClosure(c)()
+		new JsonSlurper().parseText(httpRequest.post(url, context?.build()))
+	}
+
+	def update(Closure c) {
+		bindClosure(c)()
+		new JsonSlurper().parseText(httpRequest.put("${url}", context?.build()))
+	}
+
+	private bindClosure(Closure c) {
+		def cloz = c
+		if(context) {
+			cloz = c.clone()
+			cloz.delegate = context
+		}
+		cloz
 	}
 }

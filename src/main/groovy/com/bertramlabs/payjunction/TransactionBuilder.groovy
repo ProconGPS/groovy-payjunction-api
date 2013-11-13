@@ -84,7 +84,7 @@ class TransactionBuilder {
 	 */
 	def capture(amt) {
 		clearAmounts()
-		setupTransactionAmounts(amt, opts)
+		setupTransactionAmounts(amt)
 		params.status = 'CAPTURE'
 	}
 

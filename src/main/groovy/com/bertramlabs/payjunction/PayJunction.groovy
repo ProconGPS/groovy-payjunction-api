@@ -5,32 +5,40 @@ class PayJunction {
 	def userName
 	def password
 
-	/**
-	 * @param logon logon is the term used by PayJunction for the username.
-	 * @param password the password for the account
-	 */
-	def newTransaction = {Closure c ->
-		def builder = new TransactionBuilder()
-		execClosure(c, builder)
-		buildRequest().post('/trinity/api/transaction', builder.build())
-	}
-
-	def transaction = {id ->
-		buildRequest().get("/trinity/api/transaction/${id}").response
-	}
-
 	def getTransactions() {
-		buildRequest().get("/trinity/api/transaction/").results
+		new TransactionRequest(buildRequest())
 	}
 
-	def updateTransaction = {id, Closure c ->
-		def builder = new TransactionBuilder()
-		execClosure(c, builder)
-		buildRequest().put("/trinity/api/transaction/${id}", builder.build())
+	def transaction(int id) {
+		def t = new TransactionRequest(buildRequest())
+		t.getAt(id)
 	}
 
-	def getRejects() {
-		buildRequest().get("/trinity/api/transactions/rejects").results
+	def getCustomers() {
+		new CustomerRequest(buildRequest())
+	}
+
+	def customer(int id) {
+		def c = new CustomerRequest(buildRequest())
+		c.getAt(id)
+	}
+
+	def getAddresses() {
+		new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/address')
+	}
+
+	def address(int id) {
+		def a = new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/address')
+		a.getAt(id)
+	}
+
+	def getVault() {
+		new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/vault')
+	}
+
+	def vault(int id) {
+		def v = new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/vault')
+		v.getAt(id)
 	}
 
 	/**
@@ -41,7 +49,7 @@ class PayJunction {
 	}
 
 	private buildRequest() {
-		new PayJunctionRequest(server:server, userName: userName, password: password)
+		new HttpRequest(server:server, userName: userName, password: password)
 	}
 
 	private execClosure(Closure c, deleg) {

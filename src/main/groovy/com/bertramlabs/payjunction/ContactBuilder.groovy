@@ -23,7 +23,6 @@ class ContactBuilder {
 	}
 
 	def build() {
-println "contactMap : $contactMap"
 		contactMap + [:] // return a copy
 	}
 }
