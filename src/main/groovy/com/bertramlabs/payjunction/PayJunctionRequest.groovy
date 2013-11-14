@@ -63,6 +63,12 @@ class PayJunctionRequest {
 		new JsonSlurper().parseText(httpRequest.get(url)).results
 	}
 
+	@Override
+	def clone() {
+		def c = new PayJunctionRequest(httpRequest: httpRequest, url: url, context: context, idAllowed: idAllowed, _offset: _offset)
+		c
+	}
+
 	private bindClosure(Closure c) {
 		def cloz = c
 		if(context) {
