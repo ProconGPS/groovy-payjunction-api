@@ -57,7 +57,7 @@ class HttpRequest {
 	}
 
 	private setupConnection(urlString) {
-		println "connecting to $urlString"
+		checkState()
 		def url = new URL(urlString)
 		def conn = url.openConnection()
 
@@ -66,6 +66,18 @@ class HttpRequest {
 		conn.setRequestProperty("Accept", "application/json".toString())
 
 		conn
+	}
+
+	private checkState() {
+		if(!server) {
+			throw new NotConfiguredException("server not set")
+		}
+		if(!userName) {
+			throw new NotConfiguredException("userName not set")
+		}
+		if(!password) {
+			throw new NotConfiguredException("password not set")
+		}
 	}
 
 	private readResponse(conn) {
