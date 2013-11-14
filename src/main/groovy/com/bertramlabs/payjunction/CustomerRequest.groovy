@@ -9,14 +9,15 @@ class CustomerRequest extends PayJunctionRequest {
 		httpRequest = req
 		url = '/trinity/api/customer'
 		context = new EntityBuilder(allowedParams: (['firstName',
-																										'lastName',
-																										'companyName',
-																										'email',
-																										'phone',
-																										'phone2',
-																										'jobTitle',
-																										'website',
-																										'custom1'] as Set))
+																								 'lastName',
+																								 'identifier',
+																								 'companyName',
+																								 'email',
+																								 'phone',
+																								 'phone2',
+																								 'jobTitle',
+																								 'website',
+																								 'custom1'] as Set))
 	}
 
 	def getAddress() {
