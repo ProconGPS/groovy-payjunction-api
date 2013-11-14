@@ -11,7 +11,27 @@ class PayJunctionRequest {
 
 	def get(id=null) {
 		def urlAppend = id ? "/${id}" : ''
-		new JsonSlurper().parseText(httpRequest.get("${url}/${urlAppend}"))
+		new JsonSlurper().parseText(httpRequest.get("${url}${urlAppend}"))
+	}
+
+	def create(Closure c) {
+		bindClosure(c)()
+		new JsonSlurper().parseText(httpRequest.post(url, context?.build()))
+	}
+
+	def update(id, Closure c) {
+		bindClosure(c)()
+		new JsonSlurper().parseText(httpRequest.put("${url}/${id}", context?.build()))
+	}
+
+	def update(Closure c) {
+		bindClosure(c)()
+		new JsonSlurper().parseText(httpRequest.put(url, context?.build()))
+	}
+
+	def delete(id=null) {
+		def urlAppend = id ? "/${id}" : ''
+		httpRequest.delete("${url}${urlAppend}")
 	}
 
 	def getAt(int id) {
@@ -41,16 +61,6 @@ class PayJunctionRequest {
 
 	def all() {
 		new JsonSlurper().parseText(httpRequest.get(url)).results
-	}
-
-	def create(Closure c) {
-		bindClosure(c)()
-		new JsonSlurper().parseText(httpRequest.post(url, context?.build()))
-	}
-
-	def update(Closure c) {
-		bindClosure(c)()
-		new JsonSlurper().parseText(httpRequest.put("${url}", context?.build()))
 	}
 
 	private bindClosure(Closure c) {

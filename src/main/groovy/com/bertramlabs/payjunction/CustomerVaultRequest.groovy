@@ -6,6 +6,7 @@ class CustomerVaultRequest extends PayJunctionRequest {
 	public CustomerVaultRequest(HttpRequest req, String urlRoot, int offset) {
 		httpRequest = req
 		_offset = offset
+		idAllowed = true
 		url = "${urlRoot}/vault"
 		context = new EntityBuilder(allowedParams: [
 																	'cardNumber',
@@ -21,5 +22,21 @@ class CustomerVaultRequest extends PayJunctionRequest {
 																	'achAccountType',
 																	'achType'])
 																	
+	}
+
+	@Override
+	def getAt(int idx) {
+		def c = super.getAt(idx)
+		c
+	}
+
+	@Override
+	def clone() {
+		def c = new CustomerVaultRequest(httpRequest, '', _offset)
+		c.url = url
+		c.context = context
+		c.idAllowed = idAllowed
+		c._offset = _offset
+		c
 	}
 }

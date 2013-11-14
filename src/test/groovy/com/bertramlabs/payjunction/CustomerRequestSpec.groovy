@@ -30,7 +30,7 @@ class CustomerRequestSpec extends Specification {
 
 	def "cannot get a vault info request without a customer Id"() {
 		when:
-		def result = underTest.vault
+		def result = underTest.vaults
 	
 		then:
 		thrown(IllegalStateException)
@@ -46,7 +46,7 @@ class CustomerRequestSpec extends Specification {
 
 	def "can get a vault info request"() {
 		when:
-		def result = underTest[23].vault
+		def result = underTest[23].vaults
 	
 		then:
 		result.url.endsWith('/23/vault')
@@ -55,7 +55,7 @@ class CustomerRequestSpec extends Specification {
 	def "can create a vault"() {
 		when:
 		httpMock.post(_,_) >> '{}'
-		def result = underTest[23].vault
+		def result = underTest[23].vaults
 		result.create {
 			cardNumber = '123123123'
 			cardExpMonth = '02'
@@ -71,7 +71,7 @@ class CustomerRequestSpec extends Specification {
 	def "can only use vault-specific parameters during creation"() {
 		when:
 		httpMock.post(_,_) >> '{}'
-		def result = underTest[23].vault
+		def result = underTest[23].vaults
 		result.create {
 			cardNumber = '123123123'
 			cardExpMonth = '02'

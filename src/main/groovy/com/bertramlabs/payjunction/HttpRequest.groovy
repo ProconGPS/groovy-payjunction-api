@@ -49,6 +49,19 @@ class HttpRequest {
 		readResponse(conn)
 	}
 
+	def delete(urlString) {
+		checkState()
+		def url = new URL("${server}${urlString}")
+		def conn = url.openConnection()
+		conn.requestMethod = 'DELETE'
+
+		String creds = "${userName}:${password}".toString().bytes.encodeBase64().toString()
+		conn.setRequestProperty("Authorization", "Basic ${creds}".toString())
+		if(conn.responseCode != HTTP_NO_CONTENT) {
+			checkResponseCode(conn)
+		}
+	}
+
 	private buildUrlEncodedFormData(formData) {
 		formData.collect {k,v ->
 			v = "${v}"
@@ -64,6 +77,7 @@ class HttpRequest {
 		String creds = "${userName}:${password}".toString().bytes.encodeBase64().toString()
 		conn.setRequestProperty("Authorization", "Basic ${creds}".toString())
 		conn.setRequestProperty("Accept", "application/json".toString())
+		conn.setRequestProperty("Content-Type", "application/json".toString())
 
 		conn
 	}

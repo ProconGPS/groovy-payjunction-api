@@ -27,11 +27,19 @@ class CustomerRequest extends PayJunctionRequest {
 		new CustomerAddressRequest(httpRequest: httpRequest, url: "${url}/address", context: context, idAllowed: false, _offset: _offset)
 	}
 
-	def getVault() {
+	def getVaults() {
 		if(!('vault' in validSubRequests)) {
 			throw new IllegalStateException("Cannot perform 'address' request for url ${url}")
 		}
 		new CustomerVaultRequest(httpRequest, url, _offset)
+	}
+
+	def vault(id) {
+		if(!('vault' in validSubRequests)) {
+			throw new IllegalStateException("Cannot perform 'address' request for url ${url}")
+		}
+		def req = new CustomerVaultRequest(httpRequest, url, _offset)
+		req[id]
 	}
 	
 	@Override
