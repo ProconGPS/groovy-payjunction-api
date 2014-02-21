@@ -4,6 +4,7 @@ class PayJunction {
 	def server
 	def userName
 	def password
+	def apiKey
 
 	def getTransactions() {
 		new TransactionRequest(buildRequest())
@@ -49,7 +50,7 @@ class PayJunction {
 	}
 
 	private buildRequest() {
-		new HttpRequest(server:server, userName: userName, password: password)
+		new HttpRequest(server:server, userName: userName, password: password, apiKey: apiKey)
 	}
 
 	private execClosure(Closure c, deleg) {

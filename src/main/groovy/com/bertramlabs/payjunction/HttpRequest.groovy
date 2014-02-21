@@ -6,6 +6,7 @@ class HttpRequest {
 	def server
 	def userName
 	def password
+	def apiKey
 
 	def get(urlString) {
 		def conn = setupConnection("${server}${urlString}")
@@ -78,6 +79,9 @@ class HttpRequest {
 		conn.setRequestProperty("Authorization", "Basic ${creds}".toString())
 		conn.setRequestProperty("Accept", "application/json".toString())
 		conn.setRequestProperty("Content-Type", "application/json".toString())
+		if(apiKey) {
+			conn.setRequestProperty('X-PJ-Application-Key', apiKey.toString())
+		}
 
 		conn
 	}
