@@ -7,7 +7,7 @@ class CustomerRequest extends PayJunctionRequest {
 
 	public CustomerRequest(HttpRequest req) {
 		httpRequest = req
-		url = '/trinity/api/customer'
+		url = '/customer'
 		context = new EntityBuilder(allowedParams: (['firstName',
 																								 'lastName',
 																								 'identifier',

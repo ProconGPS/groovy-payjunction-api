@@ -15,6 +15,7 @@ class PayJunctionRequest {
 	}
 
 	def create(Closure c) {
+		println "create : url : $url"
 		bindClosure(c)()
 		new JsonSlurper().parseText(httpRequest.post(url, context?.build()))
 	}
