@@ -1,0 +1,33 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+targetCompatibility = 1.6
+sourceCompatibility = 1.6
+
+repositories {
+	mavenCentral()
+}
+
+configurations {
+	deployerJars
+}
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.1.7'
+	compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.6'
+
+	testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+	testCompile 'cglib:cglib-nodep:2.2.2'
+
+	deployerJars 'org.apache.maven.wagon:wagon-http:2.2'
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			pom.version = '0.1-SNAPSHOT'
+			pom.groupId = 'com.bertramlabs'
+			pom.artifactId = 'payjunction-api'
+		}
+	}
+}

@@ -1,0 +1,9 @@
+/build
+/.gradle
+/*-deploy.gradle
+
+# Temp file patterns from Emacs and vi
+**/#*#
+**/.#*
+**/*~
+**/.*.swp
