@@ -7,7 +7,7 @@ class CustomerVaultRequest extends PayJunctionRequest {
 		httpRequest = req
 		_offset = offset
 		idAllowed = true
-		url = "${urlRoot}/vault"
+		url = "${urlRoot}/vaults"
 		context = new EntityBuilder(allowedParams: [
 																	'cardNumber',
 																	'cardExpMonth',

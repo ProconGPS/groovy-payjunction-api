@@ -79,5 +79,20 @@ session.transaction(1111).update {
 }
 ```
 
+Create a customer:
+
+```
+session.customers.create {
+	companyName 'My Company'
+	phone '3332221111'
+	email 'me@example.com'
+}
+```
+
+Get a customer's vaults:
+```
+session.customers[123].vaults
+```
+
 ## TODOS
 1. Add some configurability for defaults, e.g. turn AVS or CVV on by default.

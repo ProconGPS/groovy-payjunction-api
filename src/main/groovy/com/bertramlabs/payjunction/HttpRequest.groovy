@@ -11,6 +11,7 @@ class HttpRequest {
 	def get(urlString) {
 		def conn = setupConnection("${server}${urlString}")
 		conn.requestMethod = 'GET'
+		conn.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
 		checkResponseCode(conn)
 		readResponse(conn)
 	}
@@ -21,7 +22,7 @@ class HttpRequest {
 
 		conn.setDoOutput(true)
 		conn.setDoInput(true)
-		
+
 		conn.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
 		def os = new BufferedWriter(new OutputStreamWriter(conn.outputStream))
 		def urlEncoded = buildUrlEncodedFormData(formData)
