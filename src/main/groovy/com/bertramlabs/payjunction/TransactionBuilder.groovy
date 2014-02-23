@@ -28,11 +28,20 @@ class TransactionBuilder {
 			throw new IllegalArgumentException("Year must be four digits")
 		}
 
+		// clear the vault, in case it was added
+		params.remove('vaultId')
 		params.cardNumber = opts.number
 		params.cardExpMonth = opts.expiryMonth
 		params.cardExpYear = opts.expiryYear
 		params.cardCvv = opts.cvv
 		params.cvv = 'ON'
+	}
+
+	def vault(id) {
+		['cardNumber', 'cardExpMonth', 'cardExpYear', 'cardCvv', 'cvv'].each {key ->
+			params.remove(key)
+		}
+		params.vaultId = id
 	}
 
 	def billingInfo(Closure c) {
