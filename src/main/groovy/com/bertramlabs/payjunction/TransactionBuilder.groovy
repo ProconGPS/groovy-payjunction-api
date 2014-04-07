@@ -60,23 +60,23 @@ class TransactionBuilder {
 		params += shippingContact.build()
 	}
 
-	def charge(opts=[amount: 0, shipping:0, tip: 0, tax:0]) {
-		if(opts.amount <= 0) {
+	def charge(opts=[amt: 0, shipping:0, tip: 0, tax:0]) {
+		if(opts.amt <= 0) {
 			throw new IllegalArgumentException("Amount must be positive")
 		}
 
 		clearAmounts()
-		setupTransactionAmounts(opts.amount, opts)
+		setupTransactionAmounts(opts.amt, opts)
 		params.action = 'CHARGE'
 	}
 
-	def refund(amt) {
-		if(amt <= 0) {
+	def refund(opts=[amt:0]) {
+		if(opts.amt <= 0) {
 			throw new IllegalArgumentException("Amount must be positive")
 		}
 
 		clearAmounts()
-		setupTransactionAmounts(amt)
+		setupTransactionAmounts(opts.amt)
 		params.action = 'REFUND'
 	}
 
@@ -91,18 +91,18 @@ class TransactionBuilder {
 	/**
 	 * Only used for transaction updates.
 	 */
-	def capture(amt) {
+	def capture(opts=[amt:0, shipping:0, tip:0, tax:0]) {
 		clearAmounts()
-		setupTransactionAmounts(amt)
+		setupTransactionAmounts(opts.amt)
 		params.status = 'CAPTURE'
 	}
 
 	/**
 	 * Only used for transaction updates.
 	 */
-	def hold(amt) {
+	def hold(opts=[amt:0, shipping:0, tip:0, tax:0]) {
 		clearAmounts()
-		setupTransactionAmounts(amt, opts)
+		setupTransactionAmounts(opts.amt, opts)
 		params.status = 'HOLD'
 	}
 

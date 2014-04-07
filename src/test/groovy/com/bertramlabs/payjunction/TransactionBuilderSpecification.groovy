@@ -94,7 +94,7 @@ class TransactionBuilderSpecification extends Specification {
 
 	def "can charge a specified amount"() {
 	when:
-	underTest.charge(amount: 1.00)
+	underTest.charge(amt: 1.00)
 
 	then:
 	underTest.params.amountBase == 1.0
@@ -102,7 +102,7 @@ class TransactionBuilderSpecification extends Specification {
 
 	def "amount must be positive"() {
 	when:
-	underTest.charge(amount: -1)
+	underTest.charge(amt: -1)
 
 	then:
 	thrown(IllegalArgumentException)
@@ -110,7 +110,7 @@ class TransactionBuilderSpecification extends Specification {
 
 	def "can specify separate shipping, tip, and tax"() {
 	when:
-	underTest.charge(amount:10.12, shipping: 2.23, tip: 1.23, tax: 2.30)
+	underTest.charge(amt:10.12, shipping: 2.23, tip: 1.23, tax: 2.30)
 
 	then:
 	underTest.params.amountBase == 10.12
@@ -122,7 +122,7 @@ class TransactionBuilderSpecification extends Specification {
 
 	def "can refund"() {
 	when:
-	underTest.refund(10.12)
+	underTest.refund(amt:10.12)
 
 	then:
 	underTest.params.amountBase == 10.12
