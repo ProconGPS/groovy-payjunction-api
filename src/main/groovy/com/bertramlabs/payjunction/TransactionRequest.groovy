@@ -7,7 +7,7 @@ class TransactionRequest extends PayJunctionRequest {
 
 	public TransactionRequest(HttpRequest req) {
 		httpRequest = req
-		url = '/trinity/api/transaction'
+		url = '/transactions'
 		context = new TransactionBuilder()
 	}
 

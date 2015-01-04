@@ -4,6 +4,7 @@ class PayJunction {
 	def server
 	def userName
 	def password
+	def apiKey
 
 	def getTransactions() {
 		new TransactionRequest(buildRequest())
@@ -24,20 +25,20 @@ class PayJunction {
 	}
 
 	def getAddresses() {
-		new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/address')
+		new PayJunctionRequest(httpRequest: buildRequest(), url: '/address')
 	}
 
 	def address(int id) {
-		def a = new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/address')
+		def a = new PayJunctionRequest(httpRequest: buildRequest(), url: '/address')
 		a.getAt(id)
 	}
 
 	def getVault() {
-		new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/vault')
+		new PayJunctionRequest(httpRequest: buildRequest(), url: '/vault')
 	}
 
 	def vault(int id) {
-		def v = new PayJunctionRequest(httpRequest: buildRequest(), url: '/trinity/api/vault')
+		def v = new PayJunctionRequest(httpRequest: buildRequest(), url: '/vault')
 		v.getAt(id)
 	}
 
@@ -45,11 +46,11 @@ class PayJunction {
 	 * Creates an instance with test credentials.
 	 */
 	static def testInstance = {->
-		new PayJunction(server: 'https://www.payjunctionlabs.com', userName: 'pj-ql-01', password: 'pj-ql-01p')
+		new PayJunction(server: 'https://api.payjunctionlabs.com', userName: 'pj-ql-01', password: 'pj-ql-01p')
 	}
 
 	private buildRequest() {
-		new HttpRequest(server:server, userName: userName, password: password)
+		new HttpRequest(server:server, userName: userName, password: password, apiKey: apiKey)
 	}
 
 	private execClosure(Closure c, deleg) {

@@ -22,7 +22,7 @@ class CustomerRequestSpec extends Specification {
 
 	def "cannot get an address request info without a customer Id"() {
 		when:
-		def result = underTest.address
+		def result = underTest.addresses
 	
 		then:
 		thrown(IllegalStateException)
@@ -38,10 +38,10 @@ class CustomerRequestSpec extends Specification {
 
 	def "can get an address request"() {
 		when:
-		def result = underTest[11].address
+		def result = underTest[11].addresses
 	
 		then:
-		result.url.endsWith('/11/address')
+		result.url.endsWith('/11/addresses')
 	}
 
 	def "can get a vault info request"() {
@@ -49,7 +49,7 @@ class CustomerRequestSpec extends Specification {
 		def result = underTest[23].vaults
 	
 		then:
-		result.url.endsWith('/23/vault')
+		result.url.endsWith('/23/vaults')
 	}
 
 	def "can create a vault"() {

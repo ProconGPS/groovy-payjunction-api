@@ -25,7 +25,7 @@ dependencies {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			pom.version = '0.1-SNAPSHOT'
+			pom.version = '0.2.0'
 			pom.groupId = 'com.bertramlabs'
 			pom.artifactId = 'payjunction-api'
 		}

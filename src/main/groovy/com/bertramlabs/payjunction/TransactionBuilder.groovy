@@ -28,11 +28,20 @@ class TransactionBuilder {
 			throw new IllegalArgumentException("Year must be four digits")
 		}
 
+		// clear the vault, in case it was added
+		params.remove('vaultId')
 		params.cardNumber = opts.number
 		params.cardExpMonth = opts.expiryMonth
 		params.cardExpYear = opts.expiryYear
 		params.cardCvv = opts.cvv
 		params.cvv = 'ON'
+	}
+
+	def vault(id) {
+		['cardNumber', 'cardExpMonth', 'cardExpYear', 'cardCvv', 'cvv'].each {key ->
+			params.remove(key)
+		}
+		params.vaultId = id
 	}
 
 	def billingInfo(Closure c) {
@@ -51,23 +60,23 @@ class TransactionBuilder {
 		params += shippingContact.build()
 	}
 
-	def charge(opts=[amount: 0, shipping:0, tip: 0, tax:0]) {
-		if(opts.amount <= 0) {
+	def charge(opts=[amt: 0, shipping:0, tip: 0, tax:0]) {
+		if(opts.amt <= 0) {
 			throw new IllegalArgumentException("Amount must be positive")
 		}
 
 		clearAmounts()
-		setupTransactionAmounts(opts.amount, opts)
+		setupTransactionAmounts(opts.amt, opts)
 		params.action = 'CHARGE'
 	}
 
-	def refund(amt) {
-		if(amt <= 0) {
+	def refund(opts=[amt:0]) {
+		if(opts.amt <= 0) {
 			throw new IllegalArgumentException("Amount must be positive")
 		}
 
 		clearAmounts()
-		setupTransactionAmounts(amt)
+		setupTransactionAmounts(opts.amt)
 		params.action = 'REFUND'
 	}
 
@@ -82,18 +91,18 @@ class TransactionBuilder {
 	/**
 	 * Only used for transaction updates.
 	 */
-	def capture(amt) {
+	def capture(opts=[amt:0, shipping:0, tip:0, tax:0]) {
 		clearAmounts()
-		setupTransactionAmounts(amt)
+		setupTransactionAmounts(opts.amt)
 		params.status = 'CAPTURE'
 	}
 
 	/**
 	 * Only used for transaction updates.
 	 */
-	def hold(amt) {
+	def hold(opts=[amt:0, shipping:0, tip:0, tax:0]) {
 		clearAmounts()
-		setupTransactionAmounts(amt, opts)
+		setupTransactionAmounts(opts.amt, opts)
 		params.status = 'HOLD'
 	}
 

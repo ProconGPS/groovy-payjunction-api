@@ -6,10 +6,12 @@ class HttpRequest {
 	def server
 	def userName
 	def password
+	def apiKey
 
 	def get(urlString) {
 		def conn = setupConnection("${server}${urlString}")
 		conn.requestMethod = 'GET'
+		conn.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
 		checkResponseCode(conn)
 		readResponse(conn)
 	}
@@ -20,7 +22,7 @@ class HttpRequest {
 
 		conn.setDoOutput(true)
 		conn.setDoInput(true)
-		
+
 		conn.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
 		def os = new BufferedWriter(new OutputStreamWriter(conn.outputStream))
 		def urlEncoded = buildUrlEncodedFormData(formData)
@@ -51,12 +53,9 @@ class HttpRequest {
 
 	def delete(urlString) {
 		checkState()
-		def url = new URL("${server}${urlString}")
-		def conn = url.openConnection()
+		def conn = setupConnection("${server}${urlString}")
 		conn.requestMethod = 'DELETE'
 
-		String creds = "${userName}:${password}".toString().bytes.encodeBase64().toString()
-		conn.setRequestProperty("Authorization", "Basic ${creds}".toString())
 		if(conn.responseCode != HTTP_NO_CONTENT) {
 			checkResponseCode(conn)
 		}
@@ -77,7 +76,10 @@ class HttpRequest {
 		String creds = "${userName}:${password}".toString().bytes.encodeBase64().toString()
 		conn.setRequestProperty("Authorization", "Basic ${creds}".toString())
 		conn.setRequestProperty("Accept", "application/json".toString())
-		conn.setRequestProperty("Content-Type", "application/json".toString())
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded".toString())
+		if(apiKey) {
+			conn.setRequestProperty('X-PJ-Application-Key', apiKey.toString())
+		}
 
 		conn
 	}
